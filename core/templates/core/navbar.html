@@ -1,8 +1,9 @@
 {% load static %}
+{% comment %} {% load cart_template_tags %} {% endcomment %}
 <!--INICIO NAVBAR VERSION CARPETA INICIAL-->
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container-fluid">
-        <a class="navbar-brand" href="{% url 'core-home' %}">
+        <a class="navbar-brand" href="/">
             <table class="icomo-marca">
                 <tr>
                     <td>
@@ -22,7 +23,7 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                 <li class="nav-item">
-                    <a class="nav-link active " aria-current="page" href="{% url 'core-home' %}">Inicio</a>
+                    <a class="nav-link active " aria-current="page" href="/">Inicio</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="nosotros.html">Nosotros</a>
@@ -33,7 +34,7 @@
                         Productos
                     </a>
                     <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <li><a class="dropdown-item" href="productos/productos.html">Todos los productos</a></li>
+                        <li><a class="dropdown-item" href="{% url 'core:core-products' %}">Todos los productos</a></li>
                         <li><a class="dropdown-item" href="productos/herramientas.html">Herramientas</a></li>
                         <li><a class="dropdown-item" href="productos/semillas.html">Semillas</a></li>
                         <li><a class="dropdown-item" href="productos/arboles.html">Arboles</a></li>
@@ -47,8 +48,19 @@
                 <li class=""> </li>
             </ul>
             <a href="#" class="navbar-brand sesion"></a>
-            <a id="btn-sesion" class="btn btn-outline-light my-2 my-sm-0" type="button" href="cuenta/login.html"><i
-                    class="bi bi-person"> Iniciar Sesion</i></a>
+
+
+            <!-- Right -->
+            <li class="nav-item">
+                <div class="d-flex justify-content-between flex-column flex-sm-row">
+                <a id="btn-sesion" class="btn btn-outline-light my-2 my-sm-0" type="button" href="{% url 'account_login' %}">
+                    <i class="bi bi-person"></i> Iniciar Sesión
+                </a>
+                <a id="btn-sesion" class="btn btn-outline-light my-2 my-sm-0" type="button" href="{% url 'account_logout' %}">
+                    <i class="bi bi-person"></i> Cerrar Sesión
+                </a>
+                </div>
+            </li>
             <!--
             <form class="d-flex" role="search">
                 <input class="form-control me-2" type="search" placeholder="Buscar" aria-label="Buscar">
@@ -59,12 +71,5 @@
     </div>
 </nav>
 
-<div id="uso-api">
-    <h3>Conoce la calidad del aire en las distintas zonas del país</h3>
-    <p>
-        <label for="select-elemento">Calidad de aire de:</label>
-        <select id="select-elemento"></select>
-    <div id="tabla-datos"></div>
-    </p>
-</div>
+
 <!--FIN DEL NAVBAR-->

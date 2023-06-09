@@ -1,0 +1,140 @@
+{% extends "core/base.html" %}
+
+{% load l10n %} <!-- Load the 'l10n' template tag library -->
+{% load humanize %}
+
+{% block content %}
+
+  <!--Main layout-->
+  <main class="mt-5 pt-4">
+    <div class="container dark-grey-text mt-5">
+
+      <!--Grid row-->
+      <div class="row wow fadeIn">
+
+        <!--Grid column-->
+        <div class="col-md-6 mb-4">
+
+          <img src="{{ item.image.url }}" class="img-fluid" alt="">
+
+        </div>
+        <!--Grid column-->
+
+        <div class="col-xs-12 col-sm-12 col-md-5">
+          <section class="product-header hidden-xs">
+            <div class="brand-logo"><span class="badge purple mr-1">{{ object.get_category_display }}</span></div>
+            <h1>{{ item.title }}</h1>
+
+          </section>
+          <section class="product-info">
+            <dl class="prices-list">
+              {% if object.discount_price %}
+              <div class="product-price-container product-normal-price">
+                <dd class="product-price-type">Normal</dd>
+                <dt class="product-price product-price__line-thru">${{ object.price|floatformat:"0g" }}</dt>
+              </div>
+              <br> <!-- Add a line break here -->
+              <div class="product-price-container product-internet-price">
+                <dd class="product-price-type">Oferta</dd>
+                <dt class="product-price">${{ object.discount_price|floatformat:"0g" }}<span class="badge badge-pill danger-color ms-2">Oferta</span></dt>
+              </div>
+              <br> <!-- Add a line break here -->
+              <div class="product-price-container product-price-discount">
+                <dd class="product-price-type">Ahorro<span class="badge rounded-pill badge-danger ms-2">
+                  {{ object.get_discount_pencentaje }}%
+                </span></dd>
+              </div>
+              {% else %}
+              <div class="product-price-container product-normal-price">
+                <dd class="product-price-type">Normal</dd>
+                <dt class="product-price product-price__line-thru">{{ object.price }}</dt>
+              </div>
+              {% endif %}
+              <div class="product-header-emblems__desktop mt-3">
+                <div class="product-emblems">
+                    <div class="emblem emblem--sell pdp">Despacho en 24 horas</div>
+                </div>
+              </div>
+              <div class="product-header-emblems__mobile"></div>
+            </dl>
+          </section>
+
+          <section class="product-extras"></section>
+          <div></div>
+          <section class="product-buy-options">
+            <div class="no-gutter clearfix">
+              <div class="col-xs-4 col-sm-4 col-lg-3">
+                <div class="stepper custom-select product-quantity-input">
+                  <button id="-increase" class="stepper-control stepper-control-increase" title="Más" type="button">+</button>
+                  <div class="stepper-value">1</div>
+                  <button id="-decrease" class="stepper-control stepper-control-decrease" title="Menos" type="button" disabled="">-</button>
+                </div>
+              </div>
+              <div class="col-xs-8 col-sm-8 col-lg-9">
+                <a href="#" class="btn btn-primary btn-md my-0 p" >Agregar al carro
+                  <i class="fas fa-shopping-cart ml-1"></i>
+                </a>
+                <a href="#" class="btn btn-danger btn-md my-0 p" >Eliminar del carro
+                </a>
+              </div>
+            </div>
+          </section>
+
+        </div>
+
+      </div>
+      <!--Grid row-->
+
+      <hr>
+
+      <!--Grid row-->
+      <div class="row d-flex justify-content-center wow fadeIn">
+
+        <!--Grid column-->
+        <div class="col-md-6 text-center">
+
+          <h4 class="my-4 h4">Información del Producto</h4>
+
+          <p>{{ object.description }}.</p>
+
+        </div>
+        <!--Grid column-->
+
+      </div>
+      <!--Grid row-->
+      <hr>
+      <!--Grid row-->
+      <div class="row wow fadeIn">
+
+        <!--Grid column-->
+        <div class="col-lg-4 col-md-12 mb-4">
+
+          <img src="https://mdbootstrap.com/img/Photos/Horizontal/E-commerce/Products/11.jpg" class="img-fluid" alt="">
+
+        </div>
+        <!--Grid column-->
+
+        <!--Grid column-->
+        <div class="col-lg-4 col-md-6 mb-4">
+
+          <img src="https://mdbootstrap.com/img/Photos/Horizontal/E-commerce/Products/12.jpg" class="img-fluid" alt="">
+
+        </div>
+        <!--Grid column-->
+
+        <!--Grid column-->
+        <div class="col-lg-4 col-md-6 mb-4">
+
+          <img src="https://mdbootstrap.com/img/Photos/Horizontal/E-commerce/Products/13.jpg" class="img-fluid" alt="">
+
+        </div>
+        <!--Grid column-->
+
+      </div>
+      <!--Grid row-->
+
+    </div>
+  </main>
+  <!--Main layout-->
+{% endblock content %}
+

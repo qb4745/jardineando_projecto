@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
 from pathlib import Path
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -38,6 +39,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    'django.contrib.humanize',
     # Configuración de Crispy Forms
     'crispy_forms',
     'crispy_bootstrap5',
@@ -154,3 +156,8 @@ LOGIN_REDIRECT_URL = '/'
 LOCALE_PATHS = [
     BASE_DIR / 'core' / 'locale',
 ]
+
+
+MEDIA_URL = 'core/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'core/media')
+

@@ -101,97 +101,95 @@
       </div>
       <!--Grid row-->
       <hr>
+      <!--Grid row-->
+      <div class="row wow fadeIn">
+
+        <!--Grid column-->
+        <div class="col-lg-4 col-md-12 mb-4">
+
+          <img src="https://mdbootstrap.com/img/Photos/Horizontal/E-commerce/Products/11.jpg" class="img-fluid" alt="">
+
+        </div>
+        <!--Grid column-->
+
+        <!--Grid column-->
+        <div class="col-lg-4 col-md-6 mb-4">
+
+          <img src="https://mdbootstrap.com/img/Photos/Horizontal/E-commerce/Products/12.jpg" class="img-fluid" alt="">
+
+        </div>
+        <!--Grid column-->
+
+        <!--Grid column-->
+        <div class="col-lg-4 col-md-6 mb-4">
+
+          <img src="https://mdbootstrap.com/img/Photos/Horizontal/E-commerce/Products/13.jpg" class="img-fluid" alt="">
+
+        </div>
+        <!--Grid column-->
+
+      </div>
+      <!--Grid row-->
 
     </div>
   </main>
   <!--Main layout-->
 
+  <!--Grid row-->
+<div class="row wow fadeIn">
+  <!--Grid column-->
+  <div class="col-lg-4 col-md-12 mb-4">
+      <img src="{{ item.image.url }}" class="img-fluid" alt="">
+  </div>
+  <!--Grid column-->
 
-<!-- Random products carousel -->
+  <!--Grid column-->
+  <div class="col-lg-4 col-md-6 mb-4">
+      <img src="https://mdbootstrap.com/img/Photos/Horizontal/E-commerce/Products/12.jpg" class="img-fluid" alt="">
+  </div>
+  <!--Grid column-->
+
+  <!--Grid column-->
+  <div class="col-lg-4 col-md-6 mb-4">
+      <img src="https://mdbootstrap.com/img/Photos/Horizontal/E-commerce/Products/13.jpg" class="img-fluid" alt="">
+  </div>
+  <!--Grid column-->
+</div>
+<!--Grid row-->
+
+<!-- Related products carousel -->
 <div class="row wow fadeIn">
   <div class="col-md-12 text-center">
-      <h4 class="my-4 h4">Productos aleatorios</h4>
-      <div id="random-products-carousel" class="carousel slide" data-ride="carousel">
+      <h4 class="my-4 h4">Productos relacionados</h4>
+      <div id="related-products-carousel" class="carousel slide" data-ride="carousel">
           <!-- Indicators -->
           <ol class="carousel-indicators">
-              {% for product in random_products %}
-              <li data-target="#random-products-carousel" data-slide-to="{{ forloop.counter0 }}" {% if forloop.first %}class="active"{% endif %}></li>
+              {% for product in related_products %}
+              <li data-target="#related-products-carousel" data-slide-to="{{ forloop.counter0 }}" {% if forloop.first %}class="active"{% endif %}></li>
               {% endfor %}
           </ol>
 
           <!-- Slides -->
           <div class="carousel-inner">
-              {% for product in random_products %}
+              {% for product in related_products %}
               <div class="carousel-item {% if forloop.first %}active{% endif %}">
-                <div class="card">
-
-                  <div class="view overlay">
-                    {% comment %} <img src="https://mdbootstrap.com/img/Photos/Horizontal/E-commerce/Vertical/12.jpg" class="card-img-top" {% endcomment %}
-                    <img src="{{ item.image.url }}" class="card-img-top">
-                    <a href="{{ item.get_absolute_url }}">
-                      <div class="mask rgba-white-slight"></div>
-                    </a>
-                  </div>
-
-                  <div class="card-body text-center">
-                    <a href="" class="grey-text">
-                      <h5>{{ item.get_category_display }}</h5>
-                    </a>
-                    <h5>
-                      <strong>
-                        <a href="{{ item.get_absolute_url }}" class="dark-grey-text">{{ item.title }}</a>
-                        {% if item.label == 'S' %}
-                            <span class="badge badge-pill {{ item.get_label_display }}-color">Nuevo</span>
-                        {% elif item.label == 'D' %}
-                            <span class="badge badge-pill {{ item.get_label_display }}-color">Oferta</span>
-                        {% elif item.label == 'W' %}
-                            <span class="badge badge-pill {{ item.get_label_display }}-color">Top-Ventas</span>
-                        {% endif %}
-
-                      </strong>
-                    </h5>
-
-                    <h5 class="font-weight-bold green-text">
-                      <strong>
-                      {% if item.on_sale %}
-                        <div class="product-price-container product-normal-price mt-3">
-                          <dd class="product-price-type">Precio $<del>{{ item.price|floatformat:"0g" }}</del></dd>
-                          <dt class="product-price product-price__line-thru"></dt>
-                        </div>
-                        <div class="product-price-container product-internet-price mt-2">
-                          <dd class="product-price-type">Oferta ${{ item.discount_price|floatformat:"0g" }}</dd>
-                          <dt class="product-price"></dt>
-                        </div>
-                        <div class="product-price-container product-price-discount mt-3">
-                          <dd class="product-price-type">Descuento<span class="badge rounded-pill badge-danger ms-2">
-                            {{ item.get_discount_pencentaje }}%
-                          </span></dd>
-                        </div>
-                      {% else %}
-                        <div class="product-price-container product-normal-price mt-3">
-                          <dd class="product-price-type">Precio ${{ item.price|floatformat:"0g" }}</dd>
-                          <dt class="product-price product-price__line-thru"></dt>
-                        </div>
-                      {% endif %}
-                      </strong>
-                    </h4>
+                  <img src="{{ product.image.url }}" class="img-fluid" alt="">
               </div>
               {% endfor %}
           </div>
 
           <!-- Controls -->
-          <a class="carousel-control-prev" href="#random-products-carousel" role="button" data-slide="prev">
+          <a class="carousel-control-prev" href="#related-products-carousel" role="button" data-slide="prev">
               <span class="carousel-control-prev-icon" aria-hidden="true"></span>
               <span class="sr-only">Previous</span>
           </a>
-          <a class="carousel-control-next" href="#random-products-carousel" role="button" data-slide="next">
+          <a class="carousel-control-next" href="#related-products-carousel" role="button" data-slide="next">
               <span class="carousel-control-next-icon" aria-hidden="true"></span>
               <span class="sr-only">Next</span>
           </a>
       </div>
   </div>
 </div>
-<!-- Random products carousel -->
 
 {% endblock content %}
 

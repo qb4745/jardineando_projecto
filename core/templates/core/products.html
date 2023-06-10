@@ -74,7 +74,7 @@
                 </a>
                 <h5>
                   <strong>
-                    <a href="#" class="dark-grey-text">{{ item.title }}</a>
+                    <a href="{{ item.get_absolute_url }}" class="dark-grey-text">{{ item.title }}</a>
                     {% if item.label == 'S' %}
                         <span class="badge badge-pill {{ item.get_label_display }}-color">Nuevo</span>
                     {% elif item.label == 'D' %}
@@ -86,12 +86,27 @@
                   </strong>
                 </h5>
 
-                <h4 class="font-weight-bold blue-text">
-                  <strong>$
-                  {% if item.discount_price %}
-                  {{ item.discount_price }}
+                <h5 class="font-weight-bold green-text">
+                  <strong>
+                  {% if item.on_sale %}
+                    <div class="product-price-container product-normal-price mt-3">
+                      <dd class="product-price-type">Precio $<del>{{ item.price|floatformat:"0g" }}</del></dd>
+                      <dt class="product-price product-price__line-thru"></dt>
+                    </div>
+                    <div class="product-price-container product-internet-price mt-2">
+                      <dd class="product-price-type">Oferta ${{ item.discount_price|floatformat:"0g" }}</dd>
+                      <dt class="product-price"></dt>
+                    </div>
+                    <div class="product-price-container product-price-discount mt-3">
+                      <dd class="product-price-type">Descuento<span class="badge rounded-pill badge-danger ms-2">
+                        {{ item.get_discount_pencentaje }}%
+                      </span></dd>
+                    </div>
                   {% else %}
-                  {{ item.price }}
+                    <div class="product-price-container product-normal-price mt-3">
+                      <dd class="product-price-type">Precio ${{ item.price|floatformat:"0g" }}</dd>
+                      <dt class="product-price product-price__line-thru"></dt>
+                    </div>
                   {% endif %}
                   </strong>
                 </h4>

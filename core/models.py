@@ -13,13 +13,6 @@ CATEGORY_CHOICES = (
     ('H', 'Herramientas'),
 )
 
-
-""" LABEL_CHOICES = (
-    ('P', 'primary'),
-    ('S', 'secondary'),
-    ('D', 'danger')
-) """
-
 LABEL_CHOICES = (
     ('S', 'success'),
     ('D', 'danger'),
@@ -30,6 +23,7 @@ class Item(models.Model):
     title = models.CharField(max_length=100)
     price = models.FloatField()
     discount_price = models.FloatField(blank=True, null=True)
+    on_sale = models.BooleanField(default=False)
     category = models.CharField(choices=CATEGORY_CHOICES, max_length=2)
     label = models.CharField(choices=LABEL_CHOICES, max_length=2, blank=True, null=True)
     slug = models.SlugField()
@@ -40,22 +34,31 @@ class Item(models.Model):
         return self.title
 
     def get_absolute_url(self):
-        return reverse("core:product", kwargs={
-            'slug': self.slug
-        })
+        return reverse("core:product", kwargs={'slug': self.slug})
 
     def get_add_to_cart_url(self):
-        return reverse("core:add-to-cart", kwargs={
-            'slug': self.slug
-        })
+        return reverse("core:add-to-cart", kwargs={'slug': self.slug})
 
     def get_remove_from_cart_url(self):
-        return reverse("core:remove-from-cart", kwargs={
-            'slug': self.slug
-        })
+        return reverse("core:remove-from-cart", kwargs={'slug': self.slug})
 
     def get_discount_pencentaje(self):
         return int(((self.price - self.discount_price) / self.price) * 100)
+
+    @property
+    def display_price(self):
+        if self.on_sale and self.discount_price:
+            return self.discount_price
+        return self.price
+
+    def save(self, *args, **kwargs):
+        if self.on_sale:
+                self.label = 'D'
+        elif self.on_sale == False and self.label == 'D':
+                self.label = None
+
+        super().save(*args, **kwargs)
+
 
 
 class OrderItem(models.Model):

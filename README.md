@@ -1,6 +1,8 @@
 # jardineando_projecto
 
-Api funciona.
+super usuario: admin     pass: admin
+Se pueden crear nuevos usuarios (envia correo)
+Api aire funciona.
 Se agrega carrito.
 se agrega pagina checkout para poner direcciones.
 se habilita pago con stripe.com   

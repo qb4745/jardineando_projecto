@@ -10,14 +10,14 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.shortcuts import redirect
 from django.shortcuts import render, get_object_or_404
 from django.utils import timezone
-from django.views.generic import ListView, DetailView, View
+from django.views.generic import ListView, DetailView, View, TemplateView
 
 from .forms import CheckoutForm, CouponForm, RefundForm, PaymentForm
 from .models import Item, OrderItem, Order, Address, Payment, Coupon, Refund, UserProfile
 
 
 # stripe.api_key = settings.STRIPE_SECRET_KEY
-stripe.api_key = "sk_test_4eC39HqLyjWDarjtT1zdp7dc"
+stripe.api_key = settings.STRIPE_SECRET_KEY
 
 
 
@@ -27,7 +27,7 @@ def create_ref_code():
 
 def products(request):
     context = {
-        'items': Item.objects.all()
+        'items': Item.objects.all().order_by('name')
     }
     return render(request, "core/products.html", context)
 
@@ -38,6 +38,15 @@ def is_valid_form(values):
         if field == '':
             valid = False
     return valid
+
+
+class HomeView(TemplateView):
+    template_name = "core/home.html"
+
+class ProductListView(ListView):
+    model = Item
+    paginate_by = 10
+    template_name = "core/products.html"
 
 
 class CheckoutView(View):
@@ -209,6 +218,138 @@ class CheckoutView(View):
             return redirect("core:core-order-summary")
 
 
+
+class ProductListView(ListView):
+    model = Item
+    paginate_by = 10
+    template_name = "core/products.html"
+
+
+
+class ItemDetailView(DetailView):
+    model = Item
+    template_name = 'core/product.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        item = self.get_object()  # Retrieve the current item
+        random_products = Item.objects.exclude(slug=item.slug).order_by('?')[:5]
+        context['random_products'] = random_products
+        return context
+
+
+class OrderSummaryView(LoginRequiredMixin, View):
+    def get(self, *args, **kwargs):
+        try:
+            order = Order.objects.get(user=self.request.user, ordered=False)
+            context = {
+                'object': order
+            }
+            return render(self.request, 'core/order_summary.html', context)
+        except ObjectDoesNotExist:
+            messages.warning(self.request, "You do not have an active order")
+            return redirect("/")
+
+
+
+@login_required
+def add_to_cart(request, slug):
+    item = get_object_or_404(Item, slug=slug)
+    order_item, created = OrderItem.objects.get_or_create(
+        item=item,
+        user=request.user,
+        ordered=False
+    )
+    order_qs = Order.objects.filter(user=request.user, ordered=False)
+    if order_qs.exists():
+        order = order_qs[0]
+        # check if the order item is in the order
+        if order.items.filter(item__slug=item.slug).exists():
+            order_item.quantity += 1
+            order_item.save()
+            messages.info(request, "This item quantity was updated.")
+            return redirect("core:core-order-summary")
+        else:
+            order.items.add(order_item)
+            messages.info(request, "This item was added to your cart.")
+            return redirect("core:core-order-summary")
+    else:
+        ordered_date = timezone.now()
+        order = Order.objects.create(
+            user=request.user, ordered_date=ordered_date)
+        order.items.add(order_item)
+        messages.info(request, "This item was added to your cart.")
+        return redirect("core:core-order-summary")
+
+
+@login_required
+def remove_from_cart(request, slug):
+    item = get_object_or_404(Item, slug=slug)
+    order_qs = Order.objects.filter(
+        user=request.user,
+        ordered=False
+    )
+    if order_qs.exists():
+        order = order_qs[0]
+        # check if the order item is in the order
+        if order.items.filter(item__slug=item.slug).exists():
+            order_item = OrderItem.objects.filter(
+                item=item,
+                user=request.user,
+                ordered=False
+            )[0]
+            order.items.remove(order_item)
+            order_item.delete()
+            messages.info(request, "This item was removed from your cart.")
+            return redirect("core:core-order-summary")
+        else:
+            messages.info(request, "This item was not in your cart")
+            return redirect("core:core-product", slug=slug)
+    else:
+        messages.info(request, "You do not have an active order")
+        return redirect("core:core-product", slug=slug)
+
+
+@login_required
+def remove_single_item_from_cart(request, slug):
+    item = get_object_or_404(Item, slug=slug)
+    order_qs = Order.objects.filter(
+        user=request.user,
+        ordered=False
+    )
+    if order_qs.exists():
+        order = order_qs[0]
+        # check if the order item is in the order
+        if order.items.filter(item__slug=item.slug).exists():
+            order_item = OrderItem.objects.filter(
+                item=item,
+                user=request.user,
+                ordered=False
+            )[0]
+            if order_item.quantity > 1:
+                order_item.quantity -= 1
+                order_item.save()
+            else:
+                order.items.remove(order_item)
+            messages.info(request, "This item quantity was updated.")
+            return redirect("core:core-order-summary")
+        else:
+            messages.info(request, "This item was not in your cart")
+            return redirect("core:core-product", slug=slug)
+    else:
+        messages.info(request, "You do not have an active order")
+        return redirect("core:core-product", slug=slug)
+
+
+def get_coupon(request, code):
+    try:
+        coupon = Coupon.objects.get(code=code)
+        return coupon
+    except ObjectDoesNotExist:
+        messages.info(request, "This coupon does not exist")
+        return redirect("core:core-checkout")
+
+
 class PaymentView(View):
     def get(self, *args, **kwargs):
         order = Order.objects.get(user=self.request.user, ordered=False)
@@ -232,11 +373,11 @@ class PaymentView(View):
                     context.update({
                         'card': card_list[0]
                     })
-            return render(self.request, "payment.html", context)
+            return render(self.request, "core/payment.html", context)
         else:
             messages.warning(
                 self.request, "You have not added a billing address")
-            return redirect("core:core-checkout")
+            return redirect("core:checkout")
 
     def post(self, *args, **kwargs):
         order = Order.objects.get(user=self.request.user, ordered=False)
@@ -345,129 +486,8 @@ class PaymentView(View):
                 return redirect("/")
 
         messages.warning(self.request, "Invalid data received")
-        return redirect("/payment/stripe/")
+        return redirect("core/payment/stripe/")
 
-
-class HomeView(ListView):
-    model = Item
-    paginate_by = 10
-    template_name = "home.html"
-
-
-class OrderSummaryView(LoginRequiredMixin, View):
-    def get(self, *args, **kwargs):
-        try:
-            order = Order.objects.get(user=self.request.user, ordered=False)
-            context = {
-                'object': order
-            }
-            return render(self.request, 'order_summary.html', context)
-        except ObjectDoesNotExist:
-            messages.warning(self.request, "You do not have an active order")
-            return redirect("/")
-
-
-class ItemDetailView(DetailView):
-    model = Item
-    template_name = "product.html"
-
-
-@login_required
-def add_to_cart(request, slug):
-    item = get_object_or_404(Item, slug=slug)
-    order_item, created = OrderItem.objects.get_or_create(
-        item=item,
-        user=request.user,
-        ordered=False
-    )
-    order_qs = Order.objects.filter(user=request.user, ordered=False)
-    if order_qs.exists():
-        order = order_qs[0]
-        # check if the order item is in the order
-        if order.items.filter(item__slug=item.slug).exists():
-            order_item.quantity += 1
-            order_item.save()
-            messages.info(request, "This item quantity was updated.")
-            return redirect("core:core-order-summary")
-        else:
-            order.items.add(order_item)
-            messages.info(request, "This item was added to your cart.")
-            return redirect("core:core-order-summary")
-    else:
-        ordered_date = timezone.now()
-        order = Order.objects.create(
-            user=request.user, ordered_date=ordered_date)
-        order.items.add(order_item)
-        messages.info(request, "This item was added to your cart.")
-        return redirect("core:core-order-summary")
-
-
-@login_required
-def remove_from_cart(request, slug):
-    item = get_object_or_404(Item, slug=slug)
-    order_qs = Order.objects.filter(
-        user=request.user,
-        ordered=False
-    )
-    if order_qs.exists():
-        order = order_qs[0]
-        # check if the order item is in the order
-        if order.items.filter(item__slug=item.slug).exists():
-            order_item = OrderItem.objects.filter(
-                item=item,
-                user=request.user,
-                ordered=False
-            )[0]
-            order.items.remove(order_item)
-            order_item.delete()
-            messages.info(request, "This item was removed from your cart.")
-            return redirect("core:core-order-summary")
-        else:
-            messages.info(request, "This item was not in your cart")
-            return redirect("core:core-product", slug=slug)
-    else:
-        messages.info(request, "You do not have an active order")
-        return redirect("core:core-product", slug=slug)
-
-
-@login_required
-def remove_single_item_from_cart(request, slug):
-    item = get_object_or_404(Item, slug=slug)
-    order_qs = Order.objects.filter(
-        user=request.user,
-        ordered=False
-    )
-    if order_qs.exists():
-        order = order_qs[0]
-        # check if the order item is in the order
-        if order.items.filter(item__slug=item.slug).exists():
-            order_item = OrderItem.objects.filter(
-                item=item,
-                user=request.user,
-                ordered=False
-            )[0]
-            if order_item.quantity > 1:
-                order_item.quantity -= 1
-                order_item.save()
-            else:
-                order.items.remove(order_item)
-            messages.info(request, "This item quantity was updated.")
-            return redirect("core:core-order-summary")
-        else:
-            messages.info(request, "This item was not in your cart")
-            return redirect("core:core-product", slug=slug)
-    else:
-        messages.info(request, "You do not have an active order")
-        return redirect("core:core-product", slug=slug)
-
-
-def get_coupon(request, code):
-    try:
-        coupon = Coupon.objects.get(code=code)
-        return coupon
-    except ObjectDoesNotExist:
-        messages.info(request, "This coupon does not exist")
-        return redirect("core:core-checkout")
 
 
 class AddCouponView(View):
@@ -493,7 +513,7 @@ class RequestRefundView(View):
         context = {
             'form': form
         }
-        return render(self.request, "request_refund.html", context)
+        return render(self.request, "core/request_refund.html", context)
 
     def post(self, *args, **kwargs):
         form = RefundForm(self.request.POST)

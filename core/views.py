@@ -18,6 +18,7 @@ from .models import Item, OrderItem, Order, Address, Payment, Coupon, Refund, Us
 
 # stripe.api_key = settings.STRIPE_SECRET_KEY
 stripe.api_key = "sk_test_4eC39HqLyjWDarjtT1zdp7dc"
+STRIPE_PUBLIC_KEY = "sk_test_4eC39HqLyjWDarjtT1zdp7dc"
 
 
 
@@ -232,7 +233,7 @@ class PaymentView(View):
                     context.update({
                         'card': card_list[0]
                     })
-            return render(self.request, "payment.html", context)
+            return render(self.request, "core/payment.html", context)
         else:
             messages.warning(
                 self.request, "You have not added a billing address")
@@ -306,7 +307,7 @@ class PaymentView(View):
             except stripe.error.CardError as e:
                 body = e.json_body
                 err = body.get('error', {})
-                messages.warning(self.request, f"{err.get('message')}")
+                messages.warning(self.request, f"{err.get('message')}  aaaa")
                 return redirect("/")
 
             except stripe.error.RateLimitError as e:
@@ -345,13 +346,19 @@ class PaymentView(View):
                 return redirect("/")
 
         messages.warning(self.request, "Invalid data received")
-        return redirect("/payment/stripe/")
+        return redirect("core/payment/stripe/")
 
 
 class HomeView(ListView):
     model = Item
     paginate_by = 10
-    template_name = "home.html"
+    template_name = "core/home.html"
+
+
+class ProductsView(ListView):
+    model = Item
+    paginate_by = 10
+    template_name = "core/products.html"
 
 
 class OrderSummaryView(LoginRequiredMixin, View):
@@ -361,7 +368,7 @@ class OrderSummaryView(LoginRequiredMixin, View):
             context = {
                 'object': order
             }
-            return render(self.request, 'order_summary.html', context)
+            return render(self.request, 'core/order_summary.html', context)
         except ObjectDoesNotExist:
             messages.warning(self.request, "You do not have an active order")
             return redirect("/")
@@ -369,7 +376,7 @@ class OrderSummaryView(LoginRequiredMixin, View):
 
 class ItemDetailView(DetailView):
     model = Item
-    template_name = "product.html"
+    template_name = "core/product.html"
 
 
 @login_required

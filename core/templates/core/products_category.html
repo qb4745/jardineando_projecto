@@ -4,53 +4,57 @@
   <main>
     <div class="container">
 
-      <!--Navbar-->
-      <nav class="navbar navbar-expand-lg navbar-dark bg-success-subtle lighten-3 mt-3 mb-5">
+    <!--Navbar-->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-success-subtle lighten-3 mt-3 mb-5">
 
-        <!-- Navbar brand -->
-        <span class="navbar-brand"> Categorías:</span>
+      <!-- Navbar brand -->
+      <span class="navbar-brand"> Categorías:</span>
 
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#basicExampleNav2" aria-controls="basicExampleNav2" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-          </button>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#basicExampleNav2" aria-controls="basicExampleNav2" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
 
-        <!-- Collapsible content -->
-        <div class="collapse navbar-collapse" id="basicExampleNav2">
+      <!-- Collapsible content -->
+      <div class="collapse navbar-collapse" id="basicExampleNav2">
 
-            <!-- Links -->
-            <ul class="navbar-nav mr-auto">
-            <li class="nav-item active">
-                <a class="nav-link" href="{% url 'core:core-products-category' %}">Todas
-                <span class="sr-only">(actual)</span>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="{% url 'core:core-products-category' %}?category=A" name="category">Arboles</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="{% url 'core:core-products-category' %}?category=AR" name="category">Arbustos</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="{% url 'core:core-products-category' %}?category=M" name="category">Macetas</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="{% url 'core:core-products-category' %}?category=S" name="category">Semillas</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="{% url 'core:core-products-category' %}?category=H" name="category">Herramientas</a>
-            </li>
-              <!-- Links -->
+        <!-- Links -->
+        <ul class="navbar-nav mr-auto">
+          <li class="nav-item active">
+            <a class="nav-link" href="{% url 'core:core-products-category' %}">Todas
+              <span class="sr-only">(actual)</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'core:core-products-category' %}?category=A" name="category">Arboles</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'core:core-products-category' %}?category=AR" name="category">Arbustos</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'core:core-products-category' %}?category=M" name="category">Macetas</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'core:core-products-category' %}?category=S" name="category">Semillas</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'core:core-products-category' %}?category=H" name="category">Herramientas</a>
+          </li>
+        </ul>
+        <!-- Links -->
 
-            <form class="form-inline">
-            <div class="md-form my-0">
-                <input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search">
+        <form class="form-inline my-2 my-lg-0" method="GET" action="{% url 'core:core-products-category' %}">
+          <div class="input-group">
+            <input class="form-control bg-success-subtle lighten-3 text-white mr-sm-2" type="text" name="search" placeholder="¿Qué busca?" aria-label="Search">
+            <div class="input-group-append">
+              <button class="btn btn-outline-white my-2 my-sm-0" type="submit">Buscar</button>
             </div>
-            </form>
-        </div>
-        <!-- Collapsible content -->
+          </div>
+        </form>
+      </div>
+      <!-- Collapsible content -->
+    </nav>
+    <!--/.Navbar-->
 
-      </nav>
-      <!--/.Navbar-->
 
       <!--Section: Products v.3-->
       <section class="text-center mb-4">

@@ -475,3 +475,9 @@ form li {
 .parrafo h2 {
     margin: 40px;
 }
+
+
+.form-inline .input-group .form-control::placeholder {
+    text-decoration: underline;
+    color: white;
+  }

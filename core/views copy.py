@@ -7,7 +7,6 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import ObjectDoesNotExist
-from django.db.models import Q
 from django.shortcuts import redirect
 from django.shortcuts import render, get_object_or_404
 from django.utils import timezone
@@ -39,8 +38,6 @@ class HomeView(TemplateView):
 
 
 
-
-
 class CategoryItemListView(ListView):
     model = Item
     template_name = 'core/products_category.html'
@@ -48,41 +45,31 @@ class CategoryItemListView(ListView):
     paginate_by = 10
 
     def get_queryset(self):
-        queryset = super().get_queryset()
-
         category_filter = self.request.GET.get('category')
-        search_query = self.request.GET.get('search')
-
         if category_filter:
-            queryset = queryset.filter(category=category_filter)
-
-        if search_query:
-            queryset = queryset.filter(
-                Q(title__icontains=search_query) |
-                Q(description__icontains=search_query)
-            )
-
-        return queryset.order_by('title')
-
-    def get(self, request, *args, **kwargs):
-        search_query = self.request.GET.get('search')
-
-        if search_query:
-            queryset = self.get_queryset()
-
-            if not queryset.exists():
-                messages.warning(request, 'No se encontraron resultados para su búsqueda.')
-            else:
-                count = queryset.count()
-                messages.info(request, f'Se encontraron {count} productos para su búsqueda.')
-
-        return super().get(request, *args, **kwargs)
+            return Item.objects.filter(category=category_filter).order_by('title')
+        else:
+            return Item.objects.all().order_by('title')
 
 
 
 class Nosotrosview(TemplateView):
     template_name = "core/nosotros.html"
 
+
+class ItemListView(ListView):
+    model = Item
+    template_name = 'core/item_category.html'
+    context_object_name = 'items'
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        category_filter = self.request.GET.get('category')
+
+        if category_filter:
+            queryset = queryset.filter(category=category_filter)
+
+        return queryset
 
 class CheckoutView(LoginRequiredMixin, View):
     def get(self, *args, **kwargs):

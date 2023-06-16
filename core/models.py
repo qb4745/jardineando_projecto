@@ -112,6 +112,7 @@ class OrderItem(models.Model):
 
 
 
+
 class Order(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL,
                              on_delete=models.CASCADE)
@@ -133,16 +134,6 @@ class Order(models.Model):
     refund_requested = models.BooleanField(default=False)
     refund_granted = models.BooleanField(default=False)
 
-    '''
-    1. Item added to cart
-    2. Adding a billing address
-    (Failed checkout)
-    3. Payment
-    (Preprocessing, processing, packaging etc.)
-    4. Being delivered
-    5. Received
-    6. Refunds
-    '''
 
     def __str__(self):
         return self.user.username
@@ -153,6 +144,12 @@ class Order(models.Model):
             total += order_item.get_final_price()
         if self.coupon:
             total -= self.coupon.amount
+        return total
+
+    def get_total_number_of_items(self):
+        total = 0
+        for order_item in self.items.all():
+            total += order_item.quantity
         return total
 
 

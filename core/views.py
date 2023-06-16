@@ -36,10 +36,40 @@ def is_valid_form(values):
 class HomeView(TemplateView):
     template_name = "core/home.html"
 
-class ProductListView(ListView):
+
+
+class CategoryItemListView(ListView):
     model = Item
+    template_name = 'core/products_category.html'
+    context_object_name = 'items'
     paginate_by = 10
-    template_name = "core/products.html"
+
+    def get_queryset(self):
+        category_filter = self.request.GET.get('category')
+        if category_filter:
+            return Item.objects.filter(category=category_filter).order_by('title')
+        else:
+            return Item.objects.all().order_by('title')
+
+
+
+class Nosotrosview(TemplateView):
+    template_name = "core/nosotros.html"
+
+
+class ItemListView(ListView):
+    model = Item
+    template_name = 'core/item_category.html'
+    context_object_name = 'items'
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        category_filter = self.request.GET.get('category')
+
+        if category_filter:
+            queryset = queryset.filter(category=category_filter)
+
+        return queryset
 
 class CheckoutView(LoginRequiredMixin, View):
     def get(self, *args, **kwargs):

@@ -2,6 +2,8 @@
 
 {% load l10n %} <!-- Load the 'l10n' template tag library -->
 {% load humanize %}
+{% load custom_filters %}
+
 
 {% block content %}
 
@@ -30,11 +32,11 @@
             <dl class="prices-list">
               {% if item.on_sale %}
                 <div class="product-price-container product-normal-price mt-3">
-                  <dd class="product-price-type">Precio $<del>{{ item.price|floatformat:"0g" }}</del></dd>
+                  <dd class="product-price-type">Precio $<del>{{ item.price|add_thousands_separator }}</del></dd>
                   <dt class="product-price product-price__line-thru"></dt>
                 </div>
                 <div class="product-price-container product-internet-price mt-2">
-                  <dd class="product-price-type">Oferta ${{ item.discount_price|floatformat:"0g" }}</dd>
+                  <dd class="product-price-type">Oferta ${{ item.discount_price|add_thousands_separator }}</dd>
                   <dt class="product-price"></dt>
                 </div>
                 <div class="product-price-container product-price-discount mt-3">
@@ -44,7 +46,7 @@
                 </div>
               {% else %}
                 <div class="product-price-container product-normal-price mt-3">
-                  <dd class="product-price-type">Precio ${{ item.price|floatformat:"0g" }}</dd>
+                  <dd class="product-price-type">Precio ${{ item.price|add_thousands_separator }}</dd>
                   <dt class="product-price product-price__line-thru"></dt>
                 </div>
               {% endif %}

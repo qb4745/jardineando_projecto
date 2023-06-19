@@ -84,6 +84,24 @@ class Nosotrosview(TemplateView):
     template_name = "core/nosotros.html"
 
 
+class ProfileView(LoginRequiredMixin, TemplateView):
+    template_name = 'core/profile.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(ProfileView, self).get_context_data(**kwargs)
+        context.update({
+            "orders": Order.objects.filter(user=self.request.user, ordered=True)
+        })
+        return context
+
+
+class OrderDetailView(LoginRequiredMixin, DetailView):
+    template_name = 'core/order.html'
+    queryset = Order.objects.all()
+    context_object_name = 'order'
+
+
+
 class CheckoutView(View):
     def get(self, *args, **kwargs):
         try:

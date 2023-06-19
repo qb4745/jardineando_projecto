@@ -32,6 +32,12 @@
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'core:core-products-category' %}">Todos los productos</a>
                 </li>
+
+                {% if request.user.is_staff %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'staff:staff' %}">Panel de control</a>
+                </li>
+                {% endif %}
                 <li class="nav-item">
                     <a href="carrito.html" class="nav-link"><i class="bi bi-cart2"></i></a>
                 </li>

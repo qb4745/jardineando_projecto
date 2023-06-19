@@ -31,7 +31,7 @@ class Item(models.Model):
     label = models.CharField(choices=LABEL_CHOICES, max_length=2, blank=True, null=True)
     slug = models.SlugField()
     description = models.TextField()
-    image = models.ImageField(default='default.jpg', upload_to='productos')
+    image = models.ImageField(default='default.png', upload_to='productos')
 
     def __str__(self):
         return self.title
@@ -152,6 +152,14 @@ class Order(models.Model):
             total = 0
         return total
 
+    def get_no_coupon_total(self):
+        total = 0
+        for order_item in self.items.all():
+            total += order_item.get_final_price()
+        if total < 0:
+            total = 0
+        return total
+
     def get_total_number_of_items(self):
         total = 0
         for order_item in self.items.all():
@@ -188,11 +196,18 @@ class Payment(models.Model):
 
 
 class Coupon(models.Model):
-    code = models.CharField(max_length=15)
+    code = models.CharField(max_length=15, unique=True)
     amount = models.FloatField()
+    active = models.BooleanField(default=False)
 
     def __str__(self):
         return self.code
+
+    def get_update_url(self):
+        return reverse("staff:staff-coupon-update", kwargs={'pk': self.pk})
+
+    def get_delete_url(self):
+        return reverse("staff:staff-coupon-delete", kwargs={'pk': self.pk})
 
 
 class Refund(models.Model):

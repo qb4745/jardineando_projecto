@@ -11,7 +11,8 @@ from .views import (HomeView,
                     PaymentView,
                     Nosotrosview,
                     CategoryItemListView,
-                    ProfileView)
+                    ProfileView,
+                    OrderDetailView)
 
 app_name = 'core'
 
@@ -29,4 +30,5 @@ urlpatterns = [
     path('remove-item-from-cart/<slug>/', remove_single_item_from_cart,
          name='core-remove-single-item-from-cart'),
     path('payment/<payment_option>/', PaymentView.as_view(), name='core-payment'),
+    path('orders/<pk>/', OrderDetailView.as_view(), name='core-order-detail'),
 ]

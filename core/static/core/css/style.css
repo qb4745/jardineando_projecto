@@ -287,10 +287,10 @@ html {
 }
 
 
-.nav-link:hover {
+.navbar-collapse .nav-link:hover {
     background: #212529;
     color: #212529;
-    border-radius: 24%;
+    border-radius: 5px;
 }
 
 .carrito {
@@ -478,6 +478,31 @@ form li {
 
 
 .form-inline .input-group .form-control::placeholder {
-    text-decoration: underline;
-    color: white;
+
+    color: #212529;
+    opacity: 0.5;
   }
+  .barra-busqueda{
+    background-color: #537b4f;
+    border-radius: 5px;
+}
+.barra-busqueda .nav-link:hover{
+    background-color: #658861;
+    border-radius: 5px;
+}
+.barra-busqueda .navbar-brand{
+    padding-left: 10px;
+}
+.barra-busqueda .input-group button{
+
+    border-top-right-radius: 25px;
+    border-bottom-right-radius: 25px ;
+    margin-right: 20px;
+}
+.barra-busqueda .input-group input{
+    margin-left: 20px;
+    border-top-left-radius: 25px;
+    border-bottom-left-radius: 25px ;
+
+}
+

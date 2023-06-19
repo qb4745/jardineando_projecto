@@ -135,6 +135,10 @@ class Order(models.Model):
     refund_granted = models.BooleanField(default=False)
 
 
+    @property
+    def reference_number(self):
+        return f"ORDEN-{self.pk}"
+
     def __str__(self):
         return self.user.username
 
@@ -144,6 +148,8 @@ class Order(models.Model):
             total += order_item.get_final_price()
         if self.coupon:
             total -= self.coupon.amount
+        if total < 0:
+            total = 0
         return total
 
     def get_total_number_of_items(self):

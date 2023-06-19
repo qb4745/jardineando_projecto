@@ -1,13 +1,14 @@
 {% extends "core/base.html" %}
 
 {% load custom_filters %}
+{% block head_title %}Jardineando - Productos{% endblock head_title %}
 
 {% block content %}
   <main>
     <div class="container">
 
     <!--Navbar-->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-success-subtle lighten-3 mt-3 mb-5">
+    <nav class="navbar navbar-expand-lg navbar-dark barra-busqueda mt-3 mb-5">
 
       <!-- Navbar brand -->
       <span class="navbar-brand"> Categorías:</span>
@@ -21,10 +22,8 @@
 
         <!-- Links -->
         <ul class="navbar-nav mr-auto">
-          <li class="nav-item active">
-            <a class="nav-link" href="{% url 'core:core-products-category' %}">Todas
-              <span class="sr-only">(actual)</span>
-            </a>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'core:core-products-category' %}">Todas</a>
           </li>
           <li class="nav-item">
             <a class="nav-link" href="{% url 'core:core-products-category' %}?category=A" name="category">Arboles</a>

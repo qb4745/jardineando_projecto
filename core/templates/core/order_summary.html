@@ -3,13 +3,15 @@
 {% load l10n %} <!-- Load the 'l10n' template tag library -->
 {% load humanize %}
 {% load custom_filters %}
+{% block head_title %}Jardineando - Carrito{% endblock head_title %}
 
 {% block content %}
   <!-- Main layout -->
   <main>
     <div class="container">
+      {{ object.pk }}
       <div class="table-responsive text-nowrap">
-        <h2>Resúmen de Ordenes</h2>
+        <h2>Carrito</h2>
         <table class="table">
           <thead>
             <tr>

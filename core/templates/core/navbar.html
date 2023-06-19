@@ -43,9 +43,9 @@
                     <i class="fas fa-shopping-cart" style="color: white;"></i>
                     <span class="clearfix d-none d-sm-inline-block">Carro</span>
                 </a>
-                <span class="navbar-text mr-4">
-                    Hola, {{ request.user.username }}.
-                </span>
+                <a href="{% url 'core:core-profile' %}">
+                    <button class="btn btn-outline-light btn-dark">Hola, {{ request.user.username }}.</button>
+                </a>
                 <a href="{% url 'account_logout' %}">
                     <button type="button" class="btn btn-outline-light btn-dark">Cerrar Sesión</button>
                 </a>

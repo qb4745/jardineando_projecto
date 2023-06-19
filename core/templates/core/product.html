@@ -3,6 +3,8 @@
 {% load l10n %} <!-- Load the 'l10n' template tag library -->
 {% load humanize %}
 {% load custom_filters %}
+{% block head_title %}Jardineando - {{ item.slug }}{% endblock head_title %}
+
 
 
 {% block content %}

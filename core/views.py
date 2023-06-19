@@ -38,6 +38,9 @@ class HomeView(TemplateView):
     template_name = "core/home.html"
 
 
+
+
+
 class CategoryItemListView(ListView):
     model = Item
     template_name = 'core/products_category.html'
@@ -79,17 +82,6 @@ class CategoryItemListView(ListView):
 
 class Nosotrosview(TemplateView):
     template_name = "core/nosotros.html"
-
-
-class ProfileView(LoginRequiredMixin, TemplateView):
-    template_name = 'core/profile.html'
-
-    def get_context_data(self, **kwargs):
-        context = super(ProfileView, self).get_context_data(**kwargs)
-        context.update({
-            "orders": Order.objects.filter(user=self.request.user, ordered=True)
-        })
-        return context
 
 
 class CheckoutView(View):
@@ -250,8 +242,10 @@ class CheckoutView(View):
 
                 if payment_option == 'S':
                     return redirect('core:core-payment', payment_option='stripe')
-                elif payment_option == 'P':
-                    return redirect('core:core-payment', payment_option='paypal')
+                elif payment_option == 'W':
+                    self.process_payment_webpay(order, form)
+                    return redirect('core:core-webpay-create', payment_option='webpay')
+
                 else:
                     messages.warning(
                         self.request, "Opción de pago inválida seleccionada")
@@ -259,6 +253,9 @@ class CheckoutView(View):
         except ObjectDoesNotExist:
             messages.warning(self.request, "No tienes un pedido activo")
             return redirect("core:core-order-summary")
+
+
+
 
 
 class ProductListView(ListView):

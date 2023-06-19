@@ -38,9 +38,6 @@ class HomeView(TemplateView):
     template_name = "core/home.html"
 
 
-
-
-
 class CategoryItemListView(ListView):
     model = Item
     template_name = 'core/products_category.html'
@@ -82,6 +79,17 @@ class CategoryItemListView(ListView):
 
 class Nosotrosview(TemplateView):
     template_name = "core/nosotros.html"
+
+
+class ProfileView(LoginRequiredMixin, TemplateView):
+    template_name = 'core/profile.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(ProfileView, self).get_context_data(**kwargs)
+        context.update({
+            "orders": Order.objects.filter(user=self.request.user, ordered=True)
+        })
+        return context
 
 
 class CheckoutView(View):

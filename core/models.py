@@ -1,9 +1,16 @@
+import re
+import hashlib
+
 from django.db.models.signals import post_save
 from django.conf import settings
 from django.db import models
 from django.db.models import Sum
 from django.shortcuts import reverse
 from django_countries.fields import CountryField
+from django.core.validators import RegexValidator
+from django.core.exceptions import ValidationError
+from django.core.validators import MinValueValidator, MaxValueValidator
+from rut_chile import rut_chile
 
 # Create your models here.
 
@@ -47,6 +54,12 @@ class Item(models.Model):
 
     def get_discount_pencentaje(self):
         return int(((self.price - self.discount_price) / self.price) * 100)
+
+    def get_update_url(self):
+        return reverse("staff:staff-product-update", kwargs={'pk': self.pk})
+
+    def get_delete_url(self):
+        return reverse("staff:staff-product-delete", kwargs={'pk': self.pk})
 
     @property
     def display_price(self):
@@ -156,8 +169,6 @@ class Order(models.Model):
         total = 0
         for order_item in self.items.all():
             total += order_item.get_final_price()
-        if total < 0:
-            total = 0
         return total
 
     def get_total_number_of_items(self):
@@ -226,5 +237,33 @@ def userprofile_receiver(sender, instance, created, *args, **kwargs):
 
 
 post_save.connect(userprofile_receiver, sender=settings.AUTH_USER_MODEL)
+
+
+
+
+class Donacion(models.Model):
+    nombre = models.CharField(max_length=100, blank=False)
+    apellido = models.CharField(max_length=100, blank=False)
+    correo = models.EmailField(blank=False)
+    monto = models.IntegerField(blank=False)
+    codigo_pais = models.CharField(max_length=100, blank=False, default="+56")
+    telefono = models.IntegerField(blank=False, validators=[MinValueValidator(100000000), MaxValueValidator(999999999)])
+    rut = models.CharField(max_length=12, blank=False)
+    rut_cifrado = models.CharField(max_length=64, blank=False)
+
+    def __str__(self):
+        return f'{self.nombre} {self.apellido}'
+
+    def save(self, *args, **kwargs):
+        self.rut_cifrado = hashlib.sha256(self.rut.encode()).hexdigest()
+        super().save(*args, **kwargs)
+
+    def clean(self):
+        super().clean()
+        if not rut_chile.is_valid_rut(self.rut):
+            raise ValidationError('Ingrese un RUT válido.')
+        # Strip non-numeric characters from rut
+        self.rut = re.sub(r'[\.\-]', '', self.rut)
+
 
 

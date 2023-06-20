@@ -10,11 +10,14 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import Q
 from django.shortcuts import redirect
 from django.shortcuts import render, get_object_or_404
+from django.urls import reverse_lazy
 from django.utils import timezone
-from django.views.generic import ListView, DetailView, View, TemplateView
+from django.views.generic import ListView, DetailView, View, TemplateView, CreateView
 
-from .forms import CheckoutForm, CouponForm, RefundForm, PaymentForm
-from .models import Item, OrderItem, Order, Address, Payment, Coupon, Refund, UserProfile
+from .forms import CheckoutForm, CouponForm, RefundForm, PaymentForm, DonacionForm
+from .models import Item, OrderItem, Order, Address, Payment, Coupon, Refund, UserProfile, Donacion
+
+
 
 stripe.api_key = settings.STRIPE_SECRET_KEY
 
@@ -79,9 +82,16 @@ class CategoryItemListView(ListView):
         return super().get(request, *args, **kwargs)
 
 
+class NosotrosView(CreateView):
+    model = Donacion
+    form_class = DonacionForm
+    template_name = 'core/nosotros.html'
+    success_url = reverse_lazy('core:core-nosotros')
 
-class Nosotrosview(TemplateView):
-    template_name = "core/nosotros.html"
+    def form_valid(self, form):
+        response = super().form_valid(form)
+        messages.success(self.request, 'Los datos se han enviado correctamente, pronto nos contactaremos con usted.')
+        return response
 
 
 class ProfileView(LoginRequiredMixin, TemplateView):
@@ -299,7 +309,7 @@ class OrderSummaryView(LoginRequiredMixin, View):
         try:
             order = Order.objects.get(user=self.request.user, ordered=False)
             context = {
-                'object': order
+                'order': order
             }
             return render(self.request, 'core/order_summary.html', context)
         except ObjectDoesNotExist:
@@ -335,6 +345,7 @@ def add_to_cart(request, slug):
         order.items.add(order_item)
         messages.info(request, f"Se ha agregado  { order_item.item.__str__() } a su carrito.")
         return redirect("core:core-order-summary")
+
 
 @login_required
 def remove_from_cart(request, slug):

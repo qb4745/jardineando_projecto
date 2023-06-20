@@ -9,7 +9,7 @@ from .views import (HomeView,
                     remove_single_item_from_cart,
                     AddCouponView,
                     PaymentView,
-                    Nosotrosview,
+                    NosotrosView,
                     CategoryItemListView,
                     ProfileView,
                     OrderDetailView)
@@ -18,7 +18,7 @@ app_name = 'core'
 
 urlpatterns = [
     path('', HomeView.as_view(), name='core-home'),
-    path('nosotros/', Nosotrosview.as_view(), name='core-nosotros'),
+    path('nosotros/', NosotrosView.as_view(), name='core-nosotros'),
     path('checkout/', CheckoutView.as_view(), name='core-checkout'),
     path('products/', CategoryItemListView.as_view(), name='core-products-category'),
     path('profile/', ProfileView.as_view(), name='core-profile'),

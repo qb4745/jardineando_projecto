@@ -1,7 +1,6 @@
 {% extends "core/base.html" %}
 
 {% load static %}
-{% load crispy_forms_tags %}
 {% block head_title %}Jardineando - Nosotros{% endblock head_title %}
 
 {% block content %}
@@ -57,8 +56,6 @@
             tiendas,
             para que así siempre estén bonitos los jardines de sus compradores</p>
     </div>
-    <hr>
-
 
     <div class="parrafo">
         <h2 class="text-center">¿Quienes conforman la familia Jardineando?</h2>
@@ -91,23 +88,75 @@
             </table>
         </div>
     </div>
-    <hr>
+
 
     <div class="parrafo text-center" id="donaciones">
+
         <h2>¿Quieres realizar alguna donación a la fundación?<br></h2>
-        <h3 class="text-muted">Ingresa tus datos y te contactaremos a la brevedad.</h3>
-        <div class="container">
-          <div class="row justify-content-center">
-            <div class="col-md-6">
-              <form method="post">
-                {% csrf_token %}
-                {{ form|crispy }}
-                <button class="btn btn-success" type="submit">Quiero que me Contacten</button>
-              </form>
-            </div>
-          </div>
-        </div>
-      </div>
+
+
+
+        <form id="formulario-donacion" data-parsley-validate>
+            <p>
+                <input class="input-larga" type="text" id="nombre" name="nombre" placeholder="Nombre" required
+                    data-parsley-trigger="blur" data-parsley-error-message="Por favor, ingrese un nombre válido">
+
+            </p>
+
+            <p>
+                <input class="input-larga" type="text" id="apellido" name="apellido" placeholder="Apellido" required
+                    data-parsley-trigger="blur" data-parsley-error-message="Por favor, ingrese un apellido válido">
+            </p>
+
+            <p>
+                <input class="input-larga" type="email" id="correo" name="correo" placeholder="Correo electrónico"
+                    required data-parsley-trigger="blur"
+                    data-parsley-error-message="Por favor, ingrese un correo válido">
+            </p>
+
+            <p>
+                <input class="input-larga" type="number" id="monto" name="monto" placeholder="Monto a donar"
+                    required data-parsley-trigger="blur" min="1"
+                    data-parsley-error-message="Por favor, ingrese un monto válido">
+            </p>
+
+            <p>
+                <select id="codigo" class="input-pequenna" name="codigo" required data-parsley-trigger="blur">
+                    <option value="51">+51</option>
+                    <option value="54">+54</option>
+                    <option value="55">+55</option>
+                    <option value="56" selected>+56</option>
+                    <option value="57">+57</option>
+                    <option value="58">+58</option>
+                    <option value="591">+591</option>
+                    <option value="593">+593</option>
+                    <option value="595">+595</option>
+                    <option value="598">+598</option>
+                </select>
+
+
+                <input class="input-mediana" type="text" id="telefono" name="telefono"
+                    placeholder="Número telefónico" required data-parsley-trigger="blur"
+                    data-parsley-pattern="^[0-9]{7,}$"
+                    data-parsley-error-message="Por favor, ingrese un numero telefónico válido">
+            </p>
+
+            <p>
+                <input class="input-larga" type="text" id="rut" name="rut"
+                    placeholder="RUT (sin puntos y con guion)" required data-parsley-trigger="blur" data-parsley-rut
+                    data-parsley-error-message="Por favor, ingrese un RUT válido">
+            </p>
+
+            <button class="btn btn-primary" type="button" id="donar">Donar</button>
+        </form>
+
+
+
+
+
+
+
+
     </div>
 </div>
 </body>

@@ -1,6 +1,11 @@
+import re
 from django import forms
 from django_countries.fields import CountryField
 from django_countries.widgets import CountrySelectWidget
+from django.contrib import messages
+from django.utils.translation import gettext_lazy as _
+from django.core.validators import MinValueValidator, MaxValueValidator
+from .models import Donacion
 
 
 PAYMENT_CHOICES = (
@@ -59,5 +64,54 @@ class PaymentForm(forms.Form):
     stripeToken = forms.CharField(required=False)
     save = forms.BooleanField(required=False)
     use_default = forms.BooleanField(required=False)
+
+
+
+
+class DonacionForm(forms.ModelForm):
+    telefono = forms.IntegerField(
+        error_messages={
+            'max_value': 'Ingrese un número de teléfono válido de 9 dígitos.',
+        },
+        validators=[
+            MinValueValidator(100000000, message='Ingrese un número de teléfono válido de 9 dígitos.'),
+            MaxValueValidator(999999999, message='Ingrese un número de teléfono válido de 9 dígitos.'),
+        ]
+    )
+
+    def __init__(self, *args, **kwargs):
+        self.request = kwargs.pop('request', None)  # Retrieve the request object
+        super().__init__(*args, **kwargs)
+        self.fields['codigo_pais'].disabled = True
+        self.fields['codigo_pais'].initial = '+56'
+
+    def save(self, commit=True):
+        instance = super().save(commit)
+        if self.request:
+            messages.success(self.request, 'Los datos se han enviado correctamente, pronto nos contactaremos con usted.')
+        return instance
+
+    class Meta:
+        model = Donacion
+        fields = [
+            'nombre',
+            'apellido',
+            'correo',
+            'monto',
+            'codigo_pais',
+            'telefono',
+            'rut',
+        ]
+        labels = {
+            'nombre': _('Nombre'),
+            'apellido': _('Apellido'),
+            'correo': _('Correo electrónico'),
+            'monto': _('Monto'),
+            'codigo_pais': _('Código de País'),
+            'telefono': _('Teléfono'),
+            'rut': _('R.U.T.'),
+        }
+
+
 
 

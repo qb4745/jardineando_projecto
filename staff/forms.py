@@ -41,3 +41,6 @@ class CouponForm(forms.ModelForm):
             'amount': _('Monto de descuento'),
             'active': _('¿Activo?'),
         }
+
+
+

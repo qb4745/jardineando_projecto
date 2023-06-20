@@ -24,13 +24,7 @@ class ProductListView(LoginRequiredMixin, StaffUserMixin, generic.ListView):
         queryset = super().get_queryset()
         return queryset.order_by('-id')  # Replace 'id' with the appropriate field for ordering
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        paginator = Paginator(context['products'], self.paginate_by)
-        page_number = self.request.GET.get('page')
-        page_obj = paginator.get_page(page_number)
-        context['page_obj'] = page_obj
-        return context
+
 
 
 class CouponListView(LoginRequiredMixin, StaffUserMixin, generic.ListView):
@@ -43,13 +37,7 @@ class CouponListView(LoginRequiredMixin, StaffUserMixin, generic.ListView):
         queryset = super().get_queryset()
         return queryset.order_by('-id')  # Replace 'id' with the appropriate field for ordering
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        paginator = Paginator(context['coupons'], self.paginate_by)
-        page_number = self.request.GET.get('page')
-        page_obj = paginator.get_page(page_number)
-        context['page_obj'] = page_obj
-        return context
+
 
 
 class ProductCreateView(LoginRequiredMixin, StaffUserMixin, generic.CreateView):

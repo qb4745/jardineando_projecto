@@ -36,7 +36,7 @@
                                     {% for order in orders %}
                                     <tr>
                                         {% comment %} <td><a href="{% url 'cart:order-detail' order.pk %}">#{{ order.reference_number }}</a></td> {% endcomment %}
-                                        <td><a href="#">#{{ order.reference_number }}</a></td>
+                                        <td><a href="{% url 'core:core-order-detail' order.pk %}">#{{ order.reference_number }}</a></td>
                                         <td>{{ order.ordered_date }}</td>
                                         <td>${{ order.get_total|add_thousands_separator }}</td>
                                         <td>{% if order.ordered %}Pagada{% else %}No pagada{% endif %}</td>

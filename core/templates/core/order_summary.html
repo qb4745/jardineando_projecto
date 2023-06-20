@@ -9,7 +9,6 @@
   <!-- Main layout -->
   <main>
     <div class="container">
-      {{ object.pk }}
       <div class="table-responsive text-nowrap">
         <h2>Carrito</h2>
         <table class="table">
@@ -18,16 +17,23 @@
               <th scope="col">#</th>
               <th scope="col">Nombre del Producto</th>
               <th scope="col">Precio</th>
+              <th scope="col">Precio Oferta</th>
               <th scope="col">Cantidad</th>
-              <th scope="col">Precio Total por Producto</th>
+              <th scope="col">Subtotal</th>
             </tr>
           </thead>
           <tbody>
-            {% for order_item in object.items.all %}
+            {% for order_item in order.items.all %}
             <tr>
               <th scope="row">{{ forloop.counter }}</th>
               <td><h6>{{ order_item.item.title }}</h6></td>
-              <td><h6>${{ order_item.item.price|add_thousands_separator }}</h6></td>
+              {% if order_item.item.on_sale %}
+                <td>$<del>{{ order_item.item.price|add_thousands_separator }}</del></td>
+                <td>${{ order_item.item.discount_price|add_thousands_separator }}</td>
+              {% else %}
+                <td>${{ order_item.item.price|add_thousands_separator }}</td>
+                <td>-</td>
+              {% endif %}
               <td><h6>
                 <a href="{% url 'core:core-remove-single-item-from-cart' order_item.item.slug %}"><i class="far fa-minus-square mr-2"></i></a>
                 {{ order_item.quantity }}
@@ -50,9 +56,31 @@
             </tr>
 
             {% endfor %}
+
+              <tr>
+                <td> </td>
+                <td> </td>
+                <td> </td>
+                <td> </td>
+                <td><strong>Total Normal</strong></td>
+                <td><strong>${{ order.get_no_coupon_total|add_thousands_separator }}</strong></td>
+            </tr>
+            {% if order.coupon %}
             <tr>
-                <td colspan="4"><h6><b>Total de la compra:</b></h6></td>
-                <td colspan="5"><h6><b>${{ object.get_total|add_thousands_separator }}</b></h6></td>
+                <td> </td>
+                <td> </td>
+                <td> </td>
+                <td> </td>
+                <td>Descuento Cupon: <strong>{{ order.coupon.code }}</strong></td>
+                <td><strong>- ${{ order.coupon.amount|add_thousands_separator }}</strong></td>
+            {% endif %}
+            <tr>
+                <td> </td>
+                <td> </td>
+                <td> </td>
+                <td> </td>
+                <td><h5><b>Total de la compra:</b></h5></td>
+                <td><h5><b>${{ order.get_total|add_thousands_separator }}</b></h5></td>
               </tr>
               <tr>
                 <td colspan="5">

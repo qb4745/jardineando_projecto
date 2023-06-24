@@ -1,13 +1,12 @@
 import re
 import hashlib
+import bcrypt
 
 from django.db.models.signals import post_save
 from django.conf import settings
 from django.db import models
-from django.db.models import Sum
 from django.shortcuts import reverse
 from django_countries.fields import CountryField
-from django.core.validators import RegexValidator
 from django.core.exceptions import ValidationError
 from django.core.validators import MinValueValidator, MaxValueValidator
 from rut_chile import rut_chile
@@ -90,7 +89,10 @@ class UserProfile(models.Model):
     one_click_purchasing = models.BooleanField(default=False)
 
     def __str__(self):
-        return self.user.username
+        if self.user:
+            return self.user.username
+        else:
+            return 'No username available'
 
 
 
@@ -153,7 +155,10 @@ class Order(models.Model):
         return f"ORDEN-{self.pk}"
 
     def __str__(self):
-        return self.user.username
+        if self.user:
+            return self.user.username
+        else:
+            return 'No username available'
 
     def get_total(self):
         total = 0
@@ -203,7 +208,10 @@ class Payment(models.Model):
     timestamp = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return self.user.username
+        if self.user:
+            return self.user.username
+        else:
+            return 'No username available'
 
 
 class Coupon(models.Model):
@@ -250,20 +258,28 @@ class Donacion(models.Model):
     telefono = models.IntegerField(blank=False, validators=[MinValueValidator(100000000), MaxValueValidator(999999999)])
     rut = models.CharField(max_length=12, blank=False)
     rut_cifrado = models.CharField(max_length=64, blank=False)
+    rut_bcrypt = models.CharField(max_length=255, blank=False)
 
     def __str__(self):
         return f'{self.nombre} {self.apellido}'
 
+
+
     def save(self, *args, **kwargs):
-        self.rut_cifrado = hashlib.sha256(self.rut.encode()).hexdigest()
+        if self.rut and not self.rut_cifrado:
+            self.rut_cifrado = hashlib.sha256(self.rut.encode()).hexdigest()
+        if self.rut and not self.rut_bcrypt:
+            self.rut_bcrypt = bcrypt.hashpw(self.rut.encode(), bcrypt.gensalt()).decode()
         super().save(*args, **kwargs)
 
     def clean(self):
         super().clean()
         if not rut_chile.is_valid_rut(self.rut):
             raise ValidationError('Ingrese un RUT válido.')
-        # Strip non-numeric characters from rut
         self.rut = re.sub(r'[\.\-]', '', self.rut)
 
 
 
+"""     def save(self, *args, **kwargs):
+        self.rut_cifrado = hashlib.sha256(self.rut.encode()).hexdigest()
+        super().save(*args, **kwargs) """

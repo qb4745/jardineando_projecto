@@ -109,14 +109,13 @@ AUTH_PASSWORD_VALIDATORS = [
 # https://docs.djangoproject.com/en/4.2/topics/i18n/
 
 LANGUAGE_CODE = 'es-CL'
-TIME_ZONE = 'America/Santiago'      # Universal Cordinated Time
+TIME_ZONE = 'America/Santiago'
 USE_I18N = True
 USE_L10N = True
 USE_TZ = True
 
 LANGUAGES = [
     ('es-CL', 'Spanish (Chile)'),
-    # Other language entries...
 ]
 
 USE_THOUSAND_SEPARATOR = True
@@ -124,13 +123,12 @@ USE_THOUSAND_SEPARATOR = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
-STATIC_URL = "static/"
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
-
 
 # Crispy Forms
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
@@ -139,6 +137,7 @@ CRISPY_TEMPLATE_PACK = "bootstrap5"
 
 SITE_ID = 1
 
+STATIC_URL = "static/"
 
 LOGIN_REDIRECT_URL = '/'
 

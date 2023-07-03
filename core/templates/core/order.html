@@ -1,0 +1,96 @@
+{% extends "core/base.html" %}
+{% load custom_filters %}
+
+{% block content %}
+
+<div class="site-section">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-12">
+                <div>
+                <a href="{% url 'core:core-profile' %}">Volver a Mi Cuenta</a>
+                </div>
+                {% if request.user.is_staff %}
+                <div>
+                    <a href="{% url 'staff:staff' %}">Volver a Panel de control</a>
+                </div>
+                {% endif %}
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">
+                            Orden: #{{ order.reference_number }}
+                        </h5>
+                        <h6 class="card-subtitle mb-2 text-muted">Ordenado el {{ order.ordered_date }}</h6>
+                        <hr />
+                        <div class="site-blocks-table">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Producto</th>
+                                        <th>Cantidad</th>
+                                        <th>Precio</th>
+                                        <th>Precio Oferta.</th>
+                                        <th>Subtotal</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for order_item in order.items.all %}
+                                    <tr>
+                                        <td>{{ order_item.item.title }}</td>
+                                        <td>{{ order_item.quantity }}</td>
+                                        {% if order_item.item.on_sale %}
+                                        <td>$<del>{{ order_item.item.price|add_thousands_separator }}</del></td>
+                                        <td>${{ order_item.item.discount_price|add_thousands_separator }}</td>
+                                        {% else %}
+                                        <td>${{ order_item.item.price|add_thousands_separator }}</td>
+                                        <td>-</td>
+                                        {% endif %}
+                                        <td>${{ order_item.get_total_item_price|add_thousands_separator }}</td>
+                                    </tr>
+                                    {% endfor %}
+                                    <hr>
+
+                                    <tr>
+                                        <td> </td>
+                                        <td> </td>
+                                        <td> </td>
+                                        <td><strong>Total Normal</strong></td>
+                                        <td><strong>${{ order.get_no_coupon_total|add_thousands_separator }}</strong></td>
+                                    </tr>
+                                    {% if order.coupon %}
+                                    <tr>
+                                        <td> </td>
+                                        <td> </td>
+                                        <td> </td>
+                                        <td>Descuento Cupon: <strong>{{ order.coupon.code }}</strong></td>
+                                        <td><strong>- ${{ order.coupon.amount|add_thousands_separator }}</strong></td>
+                                    {% endif %}
+
+                                    {% if order.ordered %}
+                                    <tr>
+                                        <td> </td>
+                                        <td> </td>
+                                        <td> </td>
+                                        <td><h5><strong>Total Pagado</strong></h5></td>
+                                        <td><h5><strong>${{ order.get_total|add_thousands_separator }}</strong></h5></td>
+                                    </tr>
+                                    {% else %}
+                                    <tr>
+                                        <td> </td>
+                                        <td> </td>
+                                        <td> </td>
+                                        <td><h5><strong>Total a Pagar</strong></h5></td>
+                                        <td><h5><strong>${{ order.get_total|add_thousands_separator }}</strong></h5></td>
+                                    </tr>
+                                    {% endif %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}

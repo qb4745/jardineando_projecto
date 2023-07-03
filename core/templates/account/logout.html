@@ -6,6 +6,8 @@
 
 {% block head_title %}{% trans "Sign Out" %}{% endblock %}
 
+{% include "account/base_snippet.html" %}
+
 {% block content %}
 
 
@@ -50,7 +52,7 @@
                 {% if redirect_field_value %}
                 <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}"/>
                 {% endif %}
-                <button class="btn btn-outline-warning" type="submit">{% trans 'Sign Out' %}</button>
+                <button class="btn btn-warning" type="submit">{% trans 'Sign Out' %}</button>
               </form>
 
 

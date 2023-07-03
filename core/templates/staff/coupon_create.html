@@ -1,0 +1,26 @@
+{% extends "core/base.html" %}
+{% load crispy_forms_tags %}
+
+{% block head_title %}Jardineando - Cupones{% endblock head_title %}
+
+{% block content %}
+
+<div class="site-section">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-12">
+                <a href="{% url 'staff:staff-coupon-list' %}">Volver a Cupones</a>
+                <hr />
+                <h4>Crear un Cupon</h4>
+                <hr />
+                <form method="POST" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    {{ form|crispy }}
+                    <button type="submit" class="btn btn-success">Crear</button>
+
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

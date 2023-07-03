@@ -2,6 +2,10 @@
 
 {% load l10n %} <!-- Load the 'l10n' template tag library -->
 {% load humanize %}
+{% load custom_filters %}
+{% block head_title %}Jardineando - {{ item.slug }}{% endblock head_title %}
+
+
 
 {% block content %}
 
@@ -30,11 +34,11 @@
             <dl class="prices-list">
               {% if item.on_sale %}
                 <div class="product-price-container product-normal-price mt-3">
-                  <dd class="product-price-type">Precio $<del>{{ item.price|floatformat:"0g" }}</del></dd>
+                  <dd class="product-price-type">Precio $<del>{{ item.price|add_thousands_separator }}</del></dd>
                   <dt class="product-price product-price__line-thru"></dt>
                 </div>
                 <div class="product-price-container product-internet-price mt-2">
-                  <dd class="product-price-type">Oferta ${{ item.discount_price|floatformat:"0g" }}</dd>
+                  <dd class="product-price-type">Oferta ${{ item.discount_price|add_thousands_separator }}</dd>
                   <dt class="product-price"></dt>
                 </div>
                 <div class="product-price-container product-price-discount mt-3">
@@ -44,7 +48,7 @@
                 </div>
               {% else %}
                 <div class="product-price-container product-normal-price mt-3">
-                  <dd class="product-price-type">Precio ${{ item.price|floatformat:"0g" }}</dd>
+                  <dd class="product-price-type">Precio ${{ item.price|add_thousands_separator }}</dd>
                   <dt class="product-price product-price__line-thru"></dt>
                 </div>
               {% endif %}
@@ -61,18 +65,11 @@
           <div></div>
           <section class="product-buy-options">
             <div class="no-gutter clearfix">
-              <div class="col-xs-4 col-sm-4 col-lg-3">
-                <div class="stepper custom-select product-quantity-input">
-                  <button id="-increase" class="stepper-control stepper-control-increase" title="Más" type="button">+</button>
-                  <div class="stepper-value">1</div>
-                  <button id="-decrease" class="stepper-control stepper-control-decrease" title="Menos" type="button" disabled="">-</button>
-                </div>
-              </div>
               <div class="col-xs-8 col-sm-8 col-lg-9">
-                <a href="#" class="btn btn-primary btn-md my-0 p" >Agregar al carro
+                <a href="{{ object.get_add_to_cart_url }}" class="btn btn-primary btn-md my-0 p" >Agregar al carro
                   <i class="fas fa-shopping-cart ml-1"></i>
                 </a>
-                <a href="#" class="btn btn-danger btn-md my-0 p" >Eliminar del carro
+                <a href="{{ object.get_remove_from_cart_url }}" class="btn btn-danger btn-md my-0 p" >Eliminar del carro
                 </a>
               </div>
             </div>

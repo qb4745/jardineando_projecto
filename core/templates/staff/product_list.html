@@ -1,0 +1,166 @@
+{% extends "core/base.html" %}
+
+{% load custom_filters %}
+
+{% block head_title %}Jardineando - Products{% endblock head_title %}
+
+{% block content %}
+
+
+
+<div class="site-section">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-12">
+                <h2 class="text-black">Panel de Control - Products</h2>
+                <a href="{% url 'staff:staff-product-create' %}" class="btn btn-outline-primary btn-rounded"><i class="fa-regular fa-square-plus fa-lg"><strong>Crea un Producto</strong></i></a>
+                <div class="card">
+                    <div class="card-body">
+                        <div class="site-blocks-table">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+
+                                        <th><h5>#</h5></th>
+                                        <th><h5>Nombre del Product</h5></th>
+                                        <th><h5>Precio</h5></th>
+                                        <th><h5>Precio Oferta</h5></th>
+                                        <th><h5>¿En Oferta?</h5></th>
+                                        <th><h5>Categoria</h5></th>
+                                        <th><h5>Etiqueta</h5></th>
+                                        <th><h5>Editar</h5></th>
+                                        <th><h5>Eliminar</h5></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for product in products %}
+                                    <tr>
+                                        <td>{{ product.pk }}</td>
+                                        <td>{{ product.title }}</td>
+                                        {% if product.on_sale %}
+                                            <td>$<del>{{ product.price|add_thousands_separator }}</del></td>
+                                            <td>${{ product.discount_price|add_thousands_separator }}</td>
+                                            <td><span class="badge rounded-pill badge-danger">En Oferta Activo</span></td>
+                                        {% else %}
+                                            <td>${{ product.price|add_thousands_separator }}</td>
+                                            <td>-</td>
+                                            <td><span class="badge rounded-pill badge-success">Precio Normal</span></td>
+                                        {% endif %}
+                                        <td>{{ product.get_category_display }}</td>
+                                        {% if product.label == 'S' %}
+                                            <td><span class="badge badge-pill success-color">Nuevo</span></td>
+                                        {% elif product.label == 'D' %}
+                                            <td><span class="badge badge-pill danger-color">Oferta</span></td>
+                                        {% elif product.label == 'W' %}
+                                            <td><span class="badge badge-pill warning-color">Top-Ventas</span></td>
+                                        {% elif product.label == blank %}
+                                            <td><strong>Sin etiqueta</strong></td>
+                                        {% endif %}
+                                        <td>
+                                            <a href="{{ product.get_update_url }}" class="btn btn-sm btn-warning mt-auto">Editar</a>
+                                        </td>
+                                        <td>
+                                            <form method="post" action="{% url 'staff:staff-product-delete' product.pk %}">
+                                                {% csrf_token %}
+                                                <button type="submit" class="btn btn-sm btn-danger mt-auto" onclick="return confirm('¿Estás seguro de eliminar el product?')">Eliminar</button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                    {% empty %}
+                                    <tr>
+                                        <td colspan="3">No tienes ningún producto creado.</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+
+
+
+                        <!--Pagination-->
+                        {% if is_paginated %}
+                        <nav class="d-flex justify-content-center wow fadeIn">
+                            <ul class="pagination pg-blue">
+
+                            <!--Arrow first-->
+                            {% if page_obj.has_previous %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page=1" aria-label="First">
+                                <span aria-hidden="true">&laquo;&laquo;</span>
+                                <span class="sr-only">Primera</span>
+                                </a>
+                            </li>
+                            {% endif %}
+
+                            <!--Arrow left-->
+                            {% if page_obj.has_previous %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ page_obj.previous_page_number }}" aria-label="Previous">
+                                <span aria-hidden="true">&laquo;</span>
+                                <span class="sr-only">Anterior</span>
+                                </a>
+                            </li>
+                            {% endif %}
+
+                            {% for num in page_obj.paginator.page_range %}
+                                {% if num == page_obj.number %}
+                                <li class="page-item active">
+                                <a class="page-link" href="?page={{ page_obj.number }}">{{ num }}
+                                    <span class="sr-only">(actual)</span>
+                                </a>
+                                </li>
+                                {% elif num > page_obj.number|add:"-3" and num < page_obj.number|add:"3" %}
+                                <li class="page-item">
+                                    <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+                                </li>
+                                {% elif num == page_obj.number|add:"-3" or num == page_obj.number|add:"3" %}
+                                <li class="page-item disabled">
+                                    <span class="page-link">...</span>
+                                </li>
+                                {% endif %}
+                            {% endfor %}
+
+
+
+
+
+                            <!--Arrow right-->
+                            {% if page_obj.has_next %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ page_obj.next_page_number }}" aria-label="Next">
+                                <span aria-hidden="true">&raquo;</span>
+                                <span class="sr-only">Siguiente</span>
+                                </a>
+                            </li>
+                            {% endif %}
+
+                            <!--Arrow last-->
+                            {% if page_obj.has_next %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}" aria-label="Last">
+                                <span aria-hidden="true">&raquo;&raquo;</span>
+                                <span class="sr-only">Última</span>
+                                </a>
+                            </li>
+                            {% endif %}
+                            </ul>
+                        </nav>
+                        {% endif %}
+                        <!--Pagination-->
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}
+
+{% block scripts %}
+<script>
+    $(function () {
+        $("[data-toggle=popover]").popover();
+    });
+</script>
+{% endblock scripts %}

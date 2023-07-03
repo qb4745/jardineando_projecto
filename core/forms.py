@@ -10,7 +10,7 @@ from .models import Donacion
 
 PAYMENT_CHOICES = (
     ('S', 'Stripe'),
-    ('P', 'PayPal')
+    ('W', 'Webpay'),
 )
 
 

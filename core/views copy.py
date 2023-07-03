@@ -10,10 +10,9 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import Q
 from django.shortcuts import redirect
 from django.shortcuts import render, get_object_or_404
-from django.urls import reverse_lazy, reverse
+from django.urls import reverse_lazy
 from django.utils import timezone
 from django.views.generic import ListView, DetailView, View, TemplateView, CreateView
-
 
 from .forms import CheckoutForm, CouponForm, RefundForm, PaymentForm, DonacionForm
 from .models import Item, OrderItem, Order, Address, Payment, Coupon, Refund, UserProfile, Donacion
@@ -512,7 +511,7 @@ class PaymentView(View):
                 order.save()
 
                 messages.success(self.request, "¡Tu pedido se realizó con éxito!")
-                return redirect(reverse('core:core-order-detail', kwargs={'pk': order.pk}))
+                return redirect("/")
 
             except stripe.error.CardError as e:
                 body = e.json_body
@@ -670,31 +669,28 @@ class WebpayPlusCommitView(View):
         response = transaction_instance.commit(token=token)
         print(f"response: {response}")
 
-        order = Order.objects.get(user=self.request.user, ordered=False)
-
-
         # Check if the transaction is authorized
         if response.get('response_code') == 0 and response.get('status') == 'AUTHORIZED':
-
             # Payment is authorized
+            print("Pago ACEPTADO por webpay")
+
+            # Set order and order items as ordered
+            order = Order.objects.get(user=self.request.user, ordered=False)
             order_items = order.items.all()
             order_items.update(ordered=True)
             for item in order_items:
-                item.save()
+                    item.save()
 
             order.ordered = True
             order.save()
 
-            # Set order and order items as ordered
-
-
-            # Redirect to order detail page
-            messages.success(self.request, "¡Tu pedido se realizó con éxito!")
-            return redirect(reverse('core:core-order-detail', kwargs={'pk': order.pk}))
+            # Additional actions for authorized payment
+            # ...
 
         else:
             # Payment is not authorized
+            print("Pago RECHAZADO por webpay")
             # Perform additional actions for rejected payment
-            messages.success(self.request, "Pago RECHAZADO por webpay")
-            return redirect(reverse('core:core-order-detail', kwargs={'pk': order.pk}))
             # ...
+
+        return render(request, 'core/webpay_commit.html', {'token': token, 'response': response})

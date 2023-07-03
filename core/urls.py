@@ -12,7 +12,9 @@ from .views import (HomeView,
                     NosotrosView,
                     CategoryItemListView,
                     ProfileView,
-                    OrderDetailView)
+                    OrderDetailView,
+                    CreateWebpayPlusTransactionView,
+                    WebpayPlusCommitView)
 
 app_name = 'core'
 
@@ -31,4 +33,6 @@ urlpatterns = [
          name='core-remove-single-item-from-cart'),
     path('payment/<payment_option>/', PaymentView.as_view(), name='core-payment'),
     path('orders/<pk>/', OrderDetailView.as_view(), name='core-order-detail'),
+    path('webpay-plus/', CreateWebpayPlusTransactionView.as_view(), name='core-webpay-create'),
+    path('webpay-plus/commit/', WebpayPlusCommitView.as_view(), name='core-webpay-commit'),
 ]

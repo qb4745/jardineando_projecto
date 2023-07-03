@@ -280,6 +280,3 @@ class Donacion(models.Model):
 
 
 
-"""     def save(self, *args, **kwargs):
-        self.rut_cifrado = hashlib.sha256(self.rut.encode()).hexdigest()
-        super().save(*args, **kwargs) """

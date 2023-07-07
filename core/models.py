@@ -30,8 +30,8 @@ LABEL_CHOICES = (
 
 class Item(models.Model):
     title = models.CharField(max_length=100)
-    price = models.FloatField()
-    discount_price = models.FloatField(blank=True, null=True)
+    price = models.FloatField(validators=[MinValueValidator(1)])
+    discount_price = models.FloatField(blank=True, null=True,validators=[MinValueValidator(1)])
     on_sale = models.BooleanField(default=False)
     category = models.CharField(choices=CATEGORY_CHOICES, max_length=2)
     label = models.CharField(choices=LABEL_CHOICES, max_length=2, blank=True, null=True)
@@ -216,8 +216,8 @@ class Payment(models.Model):
 
 class Coupon(models.Model):
     code = models.CharField(max_length=15, unique=True)
-    amount = models.FloatField()
-    active = models.BooleanField(default=False)
+    amount = models.FloatField(validators=[MinValueValidator(1)])
+    active = models.BooleanField(default=True)
 
     def __str__(self):
         return self.code
@@ -253,7 +253,7 @@ class Donacion(models.Model):
     nombre = models.CharField(max_length=100, blank=False)
     apellido = models.CharField(max_length=100, blank=False)
     correo = models.EmailField(blank=False)
-    monto = models.IntegerField(blank=False)
+    monto = models.IntegerField(blank=False, validators=[MinValueValidator(1)])
     codigo_pais = models.CharField(max_length=100, blank=False, default="+56")
     telefono = models.IntegerField(blank=False, validators=[MinValueValidator(100000000), MaxValueValidator(999999999)])
     rut = models.CharField(max_length=12, blank=False)

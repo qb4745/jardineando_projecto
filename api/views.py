@@ -87,4 +87,4 @@ class OnePieceCapituloMangaListView(viewsets.ModelViewSet):
 
 
 pagination_class = PageNumberPagination
-pagination_class.page_size = 1013
+pagination_class.page_size = 1500

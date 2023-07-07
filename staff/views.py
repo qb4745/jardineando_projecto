@@ -65,7 +65,7 @@ class CouponCreateView(LoginRequiredMixin, StaffUserMixin, generic.CreateView):
 
 
 class ProductUpdateView(LoginRequiredMixin, StaffUserMixin, generic.UpdateView):
-    template_name = 'staff/product_create.html'
+    template_name = 'staff/product_update.html'
     form_class = ProductForm
     queryset = Item.objects.all()
 

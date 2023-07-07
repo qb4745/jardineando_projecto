@@ -13,9 +13,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = "django-insecure-w_-^c08pkanh)b&8%y#k_*#g8w@-18m0%(v_b-ccl0cntgjly_"
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["https://qb4745.pythonanywhere.com/"]
 
 
 # Application definition
@@ -182,7 +182,7 @@ REST_FRAMEWORK = {
 SPECTACULAR_SETTINGS = {
     'TITLE': 'Jardineando API',
     'DESCRIPTION': """Esta es la documentación de la API para Jardineando.cl, una tienda de comercio electrónico para todas tus necesidades de jardinería.\n
-        Base URL: /api/schema/swagger-ui/""",
+        Base URL: https://qb4745.pythonanywhere.com/api/schema/swagger-ui/""",
     'VERSION': '1.0.0',
     'SCHEMA_PATH_PREFIX': '/api',  # Optional prefix for API URLs
     'SERVE_PUBLIC': True,  # Set to False in production for security

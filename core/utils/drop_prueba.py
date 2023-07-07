@@ -5,6 +5,6 @@ import django
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'jardineando_projecto.settings')
 django.setup()
 
-from api.models import prueba
+from api.models import OnePieceCapituloManga as prueba
 
 prueba.objects.all().delete()

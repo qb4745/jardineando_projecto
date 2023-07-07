@@ -24,6 +24,7 @@ INSTALLED_APPS = [
     "core",
     "staff",
     'rest_framework',
+    'drf_spectacular',
     "api",
     'django_extensions',
     "django.contrib.admin",
@@ -172,6 +173,18 @@ AUTHENTICATION_BACKENDS = (
 
 
 REST_FRAMEWORK = {
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 10
+}
+
+
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'Jardineando API',
+    'DESCRIPTION': """Esta es la documentación de la API para Jardineando.cl, una tienda de comercio electrónico para todas tus necesidades de jardinería.\n
+        Base URL: /api/schema/swagger-ui/""",
+    'VERSION': '1.0.0',
+    'SCHEMA_PATH_PREFIX': '/api',  # Optional prefix for API URLs
+    'SERVE_PUBLIC': True,  # Set to False in production for security
+    # Additional settings...
 }
